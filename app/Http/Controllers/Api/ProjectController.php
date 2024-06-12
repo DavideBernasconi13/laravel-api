@@ -10,11 +10,29 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $project = Project::all();
+        $project = Project::paginate(3);
         // dd($project);
         return response()->json([
             'success' => true,
             'result' => $project
         ]);
+    }
+
+    public function show($slug)
+    {
+        //eager loading-> with (cosa mi interessa portare come dato relazionato)
+        $project = Project::where('slug', $slug)->with('category', 'tags')->first();
+        if ($project) {
+            return response()->json([
+                'success' => true,
+                'result' => $project
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'result' => 'Project not found'
+            ]);
+        }
+
     }
 }
